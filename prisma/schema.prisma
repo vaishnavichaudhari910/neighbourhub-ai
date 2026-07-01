@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ──────────────── ENUMS ────────────────
+
+enum UserRole {
+  CITIZEN
+  PROVIDER
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// ──────────────── USER ────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  passwordHash  String?
+  phone         String?
+  avatar        String?
+  role          UserRole  @default(CITIZEN)
+  emailVerified DateTime?
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  provider      Provider?
+  bookings      Booking[]
+  addresses     Address[]
+
+  @@map("users")
+}
+
+// ──────────────── PROVIDER ────────────────
+
+model Provider {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bio           String?
+  experience    Int      @default(0)
+  isVerified    Boolean  @default(false)
+  rating        Float    @default(0)
+  totalReviews  Int      @default(0)
+  latitude      Float?
+  longitude     Float?
+  city          String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  services      Service[]
+
+  @@map("providers")
+}
+
+// ──────────────── CATEGORY ────────────────
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  icon        String?
+  description String?
+  createdAt   DateTime @default(now())
+
+  services    Service[]
+
+  @@map("categories")
+}
+
+// ──────────────── SERVICE ────────────────
+
+model Service {
+  id           String   @id @default(cuid())
+  providerId   String
+  provider     Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  categoryId   String
+  category     Category @relation(fields: [categoryId], references: [id])
+
+  title        String
+  description  String
+  price        Float
+  images       String[] @default([])
+  isAvailable  Boolean  @default(true)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  bookings     Booking[]
+
+  @@index([categoryId])
+  @@index([providerId])
+  @@map("services")
+}
+
+// ──────────────── BOOKING ────────────────
+
+model Booking {
+  id         String        @id @default(cuid())
+  userId     String
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  serviceId  String
+  service    Service       @relation(fields: [serviceId], references: [id])
+
+  status     BookingStatus @default(PENDING)
+  date       DateTime
+  time       String
+  address    String
+  amount     Float
+  notes      String?
+
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([serviceId])
+  @@map("bookings")
+}
+
+// ──────────────── ADDRESS ────────────────
+
+model Address {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  label      String   // "Home", "Work", etc.
+  line1      String
+  line2      String?
+  city       String
+  state      String
+  pincode    String
+  latitude   Float?
+  longitude  Float?
+  isDefault  Boolean  @default(false)
+
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@map("addresses")
+}
