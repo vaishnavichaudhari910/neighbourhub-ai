@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/components/layout/theme-provider"
 import { QueryProvider } from "@/components/layout/query-provider"
 import { Toaster } from "sonner"
 import "./globals.css"
-
+import { AuthSessionProvider } from "@/components/layout/session-provider"
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -27,17 +27,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${poppins.variable} font-inter antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <QueryProvider>
-            {children}
-            <Toaster richColors position="top-right" />
-          </QueryProvider>
-        </ThemeProvider>
+       
+<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+  <QueryProvider>
+    {children}
+    <Toaster richColors position="top-right" />
+  </QueryProvider>
+</ThemeProvider>
       </body>
     </html>
   )

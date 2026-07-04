@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
+import { setSession } from "@/lib/auth"
 import { z } from "zod"
-import { signIn } from "@/lib/auth"
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -44,7 +44,6 @@ export async function POST(req: NextRequest) {
     }
 
     const isValid = await bcrypt.compare(password, user.passwordHash)
-
     if (!isValid) {
       return NextResponse.json(
         { success: false, error: "Invalid email or password" },
@@ -59,6 +58,14 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    await setSession({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+    })
+
     return NextResponse.json({
       success: true,
       message: "Login successful",
@@ -67,7 +74,6 @@ export async function POST(req: NextRequest) {
         name: user.name,
         email: user.email,
         role: user.role,
-        avatar: user.avatar,
       },
     })
   } catch (error) {

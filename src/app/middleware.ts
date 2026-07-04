@@ -1,42 +1,51 @@
-import { auth } from "@/lib/auth"
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
+import { jwtVerify } from "jose"
+
+const SECRET = new TextEncoder().encode(
+  process.env.NEXTAUTH_SECRET || "fallback-secret-32-chars-minimum!!"
+)
 
 const PUBLIC_ROUTES = ["/", "/login", "/register", "/forgot-password"]
-const CITIZEN_ROUTES = ["/dashboard", "/bookings", "/complaints", "/messages", "/profile"]
-const PROVIDER_ROUTES = ["/provider"]
-const ADMIN_ROUTES = ["/admin"]
 
-export default auth(async function middleware(req) {
-  const { nextUrl, auth: session } = req as any
-  const pathname = nextUrl.pathname
-  const isLoggedIn = !!session?.user
-  const role = session?.user?.role
+export async function middleware(req: NextRequest) {
+  const pathname = req.nextUrl.pathname
 
-  // Allow public routes always
-  const isPublic = PUBLIC_ROUTES.some(r => pathname === r) ||
+  const isPublic =
+    PUBLIC_ROUTES.includes(pathname) ||
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/_next") ||
-    pathname.startsWith("/api/health")
+    pathname.startsWith("/api/health") ||
+    pathname.startsWith("/favicon")
 
   if (isPublic) return NextResponse.next()
 
-  // Not logged in → redirect to login
-  if (!isLoggedIn) {
-    return NextResponse.redirect(new URL(`/login?callbackUrl=${pathname}`, req.url))
+  const token = req.cookies.get("nh-session")?.value
+
+  if (!token) {
+    return NextResponse.redirect(
+      new URL(`/login?callbackUrl=${encodeURIComponent(pathname)}`, req.url)
+    )
   }
 
-  // Provider trying to access admin
-  if (ADMIN_ROUTES.some(r => pathname.startsWith(r)) && role !== "ADMIN") {
-    return NextResponse.redirect(new URL("/dashboard", req.url))
-  }
+  try {
+    const { payload } = await jwtVerify(token, SECRET)
 
-  // Citizen trying to access provider routes
-  if (PROVIDER_ROUTES.some(r => pathname.startsWith(r)) && role !== "PROVIDER" && role !== "ADMIN") {
-    return NextResponse.redirect(new URL("/dashboard", req.url))
-  }
+    if (pathname.startsWith("/admin") && payload.role !== "ADMIN") {
+      return NextResponse.redirect(new URL("/dashboard", req.url))
+    }
 
-  return NextResponse.next()
-})
+    if (pathname.startsWith("/provider") && payload.role === "CITIZEN") {
+      return NextResponse.redirect(new URL("/dashboard", req.url))
+    }
+
+    return NextResponse.next()
+  } catch {
+    // Token invalid/expired — clear cookie and redirect
+    const response = NextResponse.redirect(new URL("/login", req.url))
+    response.cookies.delete("nh-session")
+    return response
+  }
+}
 
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|public).*)"],

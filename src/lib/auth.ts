@@ -1,97 +1,62 @@
-import NextAuth from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
-import GoogleProvider from "next-auth/providers/google"
-import bcrypt from "bcryptjs"
-import { prisma } from "@/lib/prisma"
+import { SignJWT, jwtVerify } from "jose"
+import { cookies } from "next/headers"
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  session: { strategy: "jwt" },
-  pages: {
-    signIn: "/login",
-    error: "/login",
-  },
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-    CredentialsProvider({
-      name: "credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Email and password required")
-        }
+const SECRET = new TextEncoder().encode(
+  process.env.NEXTAUTH_SECRET || "fallback-secret-32-chars-minimum!!"
+)
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email as string },
-        })
+export interface SessionUser {
+  id: string
+  name: string
+  email: string
+  role: string
+  avatar?: string | null
+}
 
-        if (!user || !user.passwordHash) {
-          throw new Error("Invalid email or password")
-        }
+// Create JWT token
+export async function createToken(user: SessionUser) {
+  return await new SignJWT({ ...user })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("7d")
+    .sign(SECRET)
+}
 
-        const isValid = await bcrypt.compare(
-          credentials.password as string,
-          user.passwordHash
-        )
+// Verify JWT token
+export async function verifyToken(token: string): Promise<SessionUser | null> {
+  try {
+    const { payload } = await jwtVerify(token, SECRET)
+    return payload as unknown as SessionUser
+  } catch {
+    return null
+  }
+}
 
-        if (!isValid) {
-          throw new Error("Invalid email or password")
-        }
+// Get session from cookie
+export async function auth(): Promise<{ user: SessionUser } | null> {
+  const cookieStore = await cookies()
+  const token = cookieStore.get("nh-session")?.value
+  if (!token) return null
+  const user = await verifyToken(token)
+  if (!user) return null
+  return { user }
+}
 
-        if (!user.isActive) {
-          throw new Error("Account is deactivated")
-        }
+// Set session cookie
+export async function setSession(user: SessionUser) {
+  const token = await createToken(user)
+  const cookieStore = await cookies()
+  cookieStore.set("nh-session", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+    path: "/",
+  })
+}
 
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          avatar: user.avatar,
-        }
-      },
-    }),
-  ],
-  callbacks: {
-    async signIn({ user, account }) {
-      if (account?.provider === "google") {
-        const existingUser = await prisma.user.findUnique({
-          where: { email: user.email! },
-        })
-        if (!existingUser) {
-          await prisma.user.create({
-            data: {
-              name: user.name!,
-              email: user.email!,
-              avatar: user.image,
-              emailVerified: new Date(),
-              role: "CITIZEN",
-            },
-          })
-        }
-      }
-      return true
-    },
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id
-        token.role = (user as any).role
-        token.avatar = (user as any).avatar
-      }
-      return token
-    },
-    async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id as string
-        session.user.role = token.role as string
-        session.user.avatar = token.avatar as string
-      }
-      return session
-    },
-  },
-})
+// Clear session cookie
+export async function clearSession() {
+  const cookieStore = await cookies()
+  cookieStore.delete("nh-session")
+}
