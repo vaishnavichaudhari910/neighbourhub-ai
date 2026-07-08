@@ -10,7 +10,10 @@ export async function middleware(req: NextRequest) {
     PUBLIC_ROUTES.includes(pathname) ||
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/_next") ||
-    pathname.startsWith("/api/health")
+    pathname.startsWith("/api/health")|| 
+    // pathname.startsWith("/api/providers")
+     pathname.startsWith("/providers") ||   // ← he add kara
+  pathname.startsWith("/services") 
 
   if (isPublic) return NextResponse.next()
 
