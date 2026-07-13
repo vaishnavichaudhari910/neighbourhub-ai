@@ -15,7 +15,9 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api/health") ||
-    pathname.startsWith("/favicon")
+    pathname.startsWith("/favicon")||
+    pathname.startsWith("/api/users") ||
+pathname.startsWith("/api/upload") 
 
   if (isPublic) return NextResponse.next()
 
