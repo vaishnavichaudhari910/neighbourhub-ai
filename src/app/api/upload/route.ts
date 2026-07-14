@@ -34,8 +34,7 @@ export async function POST(req: NextRequest) {
         { success: false, error: "Max file size is 2MB" },
         { status: 400 }
       )
-    }
-
+    
     // Convert to base64
     const bytes = await file.arrayBuffer()
     const base64 = Buffer.from(bytes).toString("base64")
