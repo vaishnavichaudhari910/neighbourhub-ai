@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
 import { Search, SlidersHorizontal, X } from "lucide-react"
@@ -17,7 +17,7 @@ const DEFAULT_FILTERS: ServiceFilters = {
   sort: "rating", page: 1,
 }
 
-export default function ServicesPage() {
+function ServicesContent() {
   const searchParams = useSearchParams()
   const [filters, setFilters] = useState<ServiceFilters>({
     ...DEFAULT_FILTERS,
@@ -41,7 +41,6 @@ export default function ServicesPage() {
 
   return (
     <div className="min-h-screen bg-background pt-20">
-      {/* Page header */}
       <div className="border-b border-border bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <h1 className="text-3xl font-poppins font-bold text-foreground mb-2">
@@ -50,8 +49,6 @@ export default function ServicesPage() {
           <p className="text-muted-foreground mb-6">
             {pagination?.total || 0} verified services near you
           </p>
-
-          {/* Search bar */}
           <form onSubmit={handleSearch} className="flex gap-2 max-w-xl">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -79,11 +76,8 @@ export default function ServicesPage() {
         </div>
       </div>
 
-      {/* Main content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="flex gap-8">
-
-          {/* Desktop sidebar */}
           <div className="hidden md:block w-56 flex-shrink-0">
             <div className="sticky top-24">
               <FiltersSidebar
@@ -93,7 +87,6 @@ export default function ServicesPage() {
             </div>
           </div>
 
-          {/* Grid */}
           <div className="flex-1">
             {isLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
@@ -138,8 +131,6 @@ export default function ServicesPage() {
                     <ServiceCard key={service.id} service={service} index={i} />
                   ))}
                 </div>
-
-                {/* Pagination */}
                 {pagination && pagination.totalPages > 1 && (
                   <div className="flex justify-center gap-2 mt-10">
                     <Button variant="outline" size="sm"
@@ -148,10 +139,10 @@ export default function ServicesPage() {
                       Previous
                     </Button>
                     {Array.from({ length: pagination.totalPages }, (_, i) => (
-                      <Button key={i+1} size="sm"
-                        variant={filters.page === i+1 ? "default" : "outline"}
-                        onClick={() => setFilters(f => ({ ...f, page: i+1 }))}>
-                        {i+1}
+                      <Button key={i + 1} size="sm"
+                        variant={filters.page === i + 1 ? "default" : "outline"}
+                        onClick={() => setFilters(f => ({ ...f, page: i + 1 }))}>
+                        {i + 1}
                       </Button>
                     ))}
                     <Button variant="outline" size="sm"
@@ -167,5 +158,23 @@ export default function ServicesPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ServicesPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background pt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+            {Array(6).fill(0).map((_, i) => (
+              <div key={i} className="rounded-2xl border border-border h-64 bg-card animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </div>
+    }>
+      <ServicesContent />
+    </Suspense>
   )
 }
