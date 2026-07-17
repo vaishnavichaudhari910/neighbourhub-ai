@@ -29,27 +29,28 @@ export default function LoginPage() {
   })
 
   const onSubmit = async (data: LoginForm) => {
-    setIsLoading(true)
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      })
-      const json = await res.json()
-      if (!json.success) {
-        toast.error(json.error)
-      } else {
-        toast.success("Welcome back!")
-        router.push("/dashboard")
-        router.refresh()
-      }
-    } catch {
-      toast.error("Something went wrong")
-    } finally {
-      setIsLoading(false)
+  setIsLoading(true)
+  try {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+    const json = await res.json()
+    if (!json.success) {
+      toast.error(json.error)
+    } else {
+      toast.success(`Welcome back, ${json.data.name}!`)
+      // Role-based redirect — API tells us where to go
+      router.push(json.redirectTo || "/dashboard")
+      router.refresh()
     }
+  } catch {
+    toast.error("Something went wrong")
+  } finally {
+    setIsLoading(false)
   }
+}
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
