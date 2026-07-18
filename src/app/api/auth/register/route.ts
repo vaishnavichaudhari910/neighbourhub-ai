@@ -41,10 +41,15 @@ export async function POST(req: NextRequest) {
     })
 
     if (role === "PROVIDER") {
-      await prisma.provider.create({
-        data: { userId: user.id },
-      })
-    }
+  await prisma.provider.create({
+    data: {
+      userId: user.id,
+      isVerified: true,  // ← auto-verify
+      rating: 0,
+      totalReviews: 0,
+    },
+  })
+}
 
     return NextResponse.json(
       { success: true, message: "Account created successfully", data: user },

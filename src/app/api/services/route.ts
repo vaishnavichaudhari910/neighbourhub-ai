@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     const skip      = (page - 1) * limit
 
     const providerFilter: any = {
-      isVerified: true,
+      // isVerified: true,
     }
     if (minRating > 0) {
       providerFilter.rating = { gte: minRating }
