@@ -96,34 +96,46 @@ function BookingContent() {
   }
 
   const handleConfirmBooking = async () => {
-    if (!address) return
-    setIsSubmitting(true)
-    try {
-      const res = await fetch("/api/bookings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          serviceId,
-          date: dateParam,
-          time: selectedTime,
-          address: `${address.line1}, ${address.city} - ${address.pincode}${address.landmark ? `, Near ${address.landmark}` : ""}`,
-          amount: total,
-        }),
-      })
-      const json = await res.json()
-      if (!json.success) {
-        toast.error(json.error)
-      } else {
-        setConfirmedBooking(json.data)
-        setStep(4)
-        toast.success("Booking confirmed! 🎉")
-      }
-    } catch {
-      toast.error("Something went wrong")
-    } finally {
-      setIsSubmitting(false)
+  if (!address) return
+  setIsSubmitting(true)
+
+  try {
+    // Mock payment delay — feels real
+    toast.loading("Processing payment...", { id: "payment" })
+    await new Promise(resolve => setTimeout(resolve, 1500))
+    toast.dismiss("payment")
+    toast.success("Payment successful! ₹" + total, { id: "pay-success" })
+
+    // Small delay then create booking
+    await new Promise(resolve => setTimeout(resolve, 800))
+
+    const res = await fetch("/api/bookings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        serviceId,
+        date: dateParam,
+        time: selectedTime,
+        address: `${address.line1}, ${address.city} - ${address.pincode}${address.landmark ? `, Near ${address.landmark}` : ""}`,
+        amount: total,
+      }),
+    })
+
+    const json = await res.json()
+
+    if (!json.success) {
+      toast.error(json.error || "Booking failed")
+    } else {
+      setConfirmedBooking(json.data)
+      setStep(4)
+      toast.success("Booking confirmed! 🎉")
     }
+  } catch {
+    toast.error("Something went wrong. Please try again.")
+  } finally {
+    setIsSubmitting(false)
   }
+}
 
   const selectedDate = dateParam ? new Date(dateParam) : null
 
@@ -198,11 +210,11 @@ function BookingContent() {
                 </div>
               )}
               <Button className="w-full h-11 gap-2"
-                disabled={!selectedTime}
-                style={{ background: "linear-gradient(135deg, #3b82f6, #8b5cf6)" }}
-                onClick={() => setStep(2)}>
-                Continue <ChevronRight className="w-4 h-4" />
-              </Button>
+  disabled={!selectedTime}
+  style={{ background: "linear-gradient(135deg, #3b82f6, #8b5cf6)" }}
+  onClick={() => setStep(2)}>
+  Continue <ChevronRight className="w-4 h-4" />
+</Button>
             </motion.div>
           )}
 
