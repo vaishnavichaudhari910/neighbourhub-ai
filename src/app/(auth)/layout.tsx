@@ -44,37 +44,96 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </Link>
 
         {/* Center content */}
-        <div className="relative z-10">
-          <motion.h1
-            className="text-4xl font-poppins font-bold text-white mb-4 leading-tight"
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            Your Community,<br />
-            <span style={{ background: "linear-gradient(135deg, #60a5fa, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              Smarter
-            </span>
-          </motion.h1>
-          <motion.p
-            className="text-slate-400 text-lg leading-relaxed mb-8"
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-            Book trusted local services, report issues, and connect with your neighbourhood — all powered by AI.
-          </motion.p>
+        {/* Main Content */}
+<div className="relative z-10 flex-1 flex items-center">
+  <div className="grid lg:grid-cols-2 gap-12 items-center w-full">
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 gap-4">
-            {stats.map((stat, i) => (
-              <motion.div key={stat.label}
-                className="rounded-2xl p-4 border border-white/10"
-                style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(10px)" }}
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + i * 0.1 }}>
-                <stat.icon className="w-5 h-5 text-blue-400 mb-2" />
-                <div className="text-2xl font-poppins font-bold text-white">{stat.value}</div>
-                <div className="text-slate-400 text-sm">{stat.label}</div>
-              </motion.div>
-            ))}
+    {/* LEFT */}
+    <div>
+      <motion.h1
+        className="text-5xl font-bold text-white leading-tight mb-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        Your Neighbourhood,
+        <br />
+        <span className="text-blue-400">
+          Connected.
+        </span>
+      </motion.h1>
+
+      <motion.p
+        className="text-slate-300 text-lg leading-8 mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: .2 }}
+      >
+        Book trusted local services, report civic issues,
+        and connect with people around you.
+      </motion.p>
+
+      <div className="grid grid-cols-2 gap-4">
+        {stats.map((stat) => (
+          <div
+            key={stat.label}
+            className="bg-white/5 backdrop-blur-md rounded-xl p-5 border border-white/10"
+          >
+            <stat.icon className="text-blue-400 w-6 h-6 mb-3" />
+            <h2 className="text-2xl font-bold text-white">
+              {stat.value}
+            </h2>
+            <p className="text-slate-400 text-sm">
+              {stat.label}
+            </p>
           </div>
+        ))}
+      </div>
+    </div>
+
+    {/* RIGHT IMAGE */}
+    <motion.div
+      className="relative flex justify-center"
+      initial={{ opacity: 0, x: 40 }}
+      animate={{ opacity: 1, x: 0 }}
+    >
+      <img
+        src="/images/home.png"
+        alt="Neighbourhood"
+        className="w-full max-w-xl object-contain"
+      />
+
+      {/* Floating Card */}
+      <div className="absolute top-10 right-0 bg-white rounded-2xl px-5 py-4 shadow-xl flex items-center gap-3">
+
+        <div className="flex -space-x-2">
+          <img
+            src="https://i.pravatar.cc/40?img=1"
+            className="w-9 h-9 rounded-full border-2 border-white"
+          />
+          <img
+            src="https://i.pravatar.cc/40?img=2"
+            className="w-9 h-9 rounded-full border-2 border-white"
+          />
+          <img
+            src="https://i.pravatar.cc/40?img=3"
+            className="w-9 h-9 rounded-full border-2 border-white"
+          />
         </div>
 
+        <div>
+          <h3 className="font-bold text-black text-lg">
+            10,000+
+          </h3>
+          <p className="text-gray-500 text-sm">
+            Happy Residents
+          </p>
+        </div>
+      </div>
+
+    </motion.div>
+
+  </div>
+</div>
         {/* Bottom quote */}
         <motion.p className="relative z-10 text-slate-500 text-sm"
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>

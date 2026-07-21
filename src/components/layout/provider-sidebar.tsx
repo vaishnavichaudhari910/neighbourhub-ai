@@ -28,7 +28,8 @@ export function ProviderSidebar() {
   const router = useRouter()
   const { theme, setTheme } = useTheme()
   const [mobileOpen, setMobileOpen] = useState(false)
-
+const [mounted, setMounted] = useState(false)
+useEffect(() => { setMounted(true) }, [])
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" })
     toast.success("Logged out")
@@ -73,8 +74,11 @@ export function ProviderSidebar() {
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
-          {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          {theme === "dark" ? "Light mode" : "Dark mode"}
+         {mounted ? (
+  theme === "dark"
+    ? <Sun className="w-4 h-4" />
+    : <Moon className="w-4 h-4" />
+) : <div className="w-4 h-4" />}
         </button>
         <button onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">

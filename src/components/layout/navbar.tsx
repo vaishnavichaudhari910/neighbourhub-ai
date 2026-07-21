@@ -22,6 +22,9 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { theme, setTheme } = useTheme()
   const pathname = usePathname()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => setMounted(true), [])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -80,17 +83,19 @@ export function Navbar() {
           {/* Right side */}
           <div className="flex items-center gap-2">
             {/* Dark mode toggle */}
-            <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
-              <AnimatePresence mode="wait">
-                <motion.div key={theme}
-                  initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                  {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                </motion.div>
-              </AnimatePresence>
-            </button>
+           {/* Theme toggle */}
+<button
+  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+  className="w-9 h-9 rounded-xl border border-border bg-card flex items-center justify-center hover:bg-accent transition-colors">
+  {/* mounted check — hydration fix */}
+  {mounted ? (
+    theme === "dark"
+      ? <Sun className="w-4 h-4" />
+      : <Moon className="w-4 h-4" />
+  ) : (
+    <div className="w-4 h-4" /> // placeholder — server render sathi
+  )}
+</button>
 
             {/* Auth buttons */}
             <div className="hidden md:flex items-center gap-2">
