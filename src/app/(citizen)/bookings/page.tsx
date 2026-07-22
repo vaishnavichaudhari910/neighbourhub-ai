@@ -1,6 +1,6 @@
 "use client"
 
-import { useState,useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { motion } from "framer-motion"
 import { format } from "date-fns"
@@ -12,16 +12,21 @@ import { cn } from "@/lib/utils"
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: any }> = {
   PENDING:     { label: "Pending",     color: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400", icon: Clock },
-  CONFIRMED:   { label: "Confirmed",   color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",   icon: CalendarCheck },
+  CONFIRMED:   { label: "Confirmed",   color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",         icon: CalendarCheck },
   IN_PROGRESS: { label: "In Progress", color: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400", icon: TrendingUp },
-  COMPLETED:   { label: "Completed",   color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",  icon: CheckCircle },
-  CANCELLED:   { label: "Cancelled",   color: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",     icon: XCircle },
+  COMPLETED:   { label: "Completed",   color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",     icon: CheckCircle },
+  CANCELLED:   { label: "Cancelled",   color: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",             icon: XCircle },
 }
 
 const TABS = ["All", "Pending", "Confirmed", "Completed", "Cancelled"]
 
 export default function BookingsPage() {
   const [activeTab, setActiveTab] = useState("All")
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const { data, isLoading } = useQuery({
     queryKey: ["my-bookings"],
@@ -29,12 +34,15 @@ export default function BookingsPage() {
       const res = await fetch("/api/bookings")
       return res.json()
     },
+    enabled: mounted,
   })
 
   const allBookings = data?.data || []
   const filtered = activeTab === "All"
     ? allBookings
-    : allBookings.filter((b: any) => b.status === activeTab.toUpperCase().replace(" ", "_"))
+    : allBookings.filter((b: any) =>
+        b.status === activeTab.toUpperCase().replace(" ", "_")
+      )
 
   return (
     <div className="p-6 pt-20 lg:pt-8 max-w-4xl">
@@ -63,14 +71,18 @@ export default function BookingsPage() {
       </div>
 
       {/* Bookings list */}
-      {isLoading ? (
+      {!mounted || isLoading ? (
         <div className="space-y-4">
-          {Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-28 rounded-2xl" />)}
+          {Array(4).fill(0).map((_, i) => (
+            <Skeleton key={i} className="h-28 rounded-2xl" />
+          ))}
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 bg-card border border-border rounded-2xl">
           <div className="text-5xl mb-3">📋</div>
-          <p className="font-medium text-foreground mb-4">No {activeTab.toLowerCase()} bookings</p>
+          <p className="font-medium text-foreground mb-4">
+            No {activeTab.toLowerCase()} bookings
+          </p>
           <Button size="sm" asChild
             style={{ background: "linear-gradient(135deg, #3b82f6, #8b5cf6)" }}>
             <Link href="/services">Book a service</Link>
@@ -84,7 +96,8 @@ export default function BookingsPage() {
             return (
               <motion.div key={booking.id}
                 className="bg-card border border-border rounded-2xl p-5 hover:border-primary/30 transition-colors"
-                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}>
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-2xl flex-shrink-0">
@@ -109,7 +122,7 @@ export default function BookingsPage() {
                     </div>
                     {booking.notes && (
                       <p className="text-xs text-muted-foreground mt-2 bg-secondary px-3 py-1.5 rounded-lg">
-                        Note: {booking.notes}
+                        {booking.notes}
                       </p>
                     )}
                   </div>
