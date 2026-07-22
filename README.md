@@ -1,23 +1,4 @@
-<div align="center">
-  <img src="public/logo.png" alt="NeighbourHub AI Logo" width="80" />
-  
-  # NeighbourHub AI
-  
-  ### Your Neighbourhood, Smarter with AI
-  
-  **Book trusted local services · Report civic issues · Connect with your community**
 
-  [![Next.js](https://img.shields.io/badge/Next.js-16.2-black?logo=next.js)](https://nextjs.org)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://typescriptlang.org)
-  [![Prisma](https://img.shields.io/badge/Prisma-6.0-2D3748?logo=prisma)](https://prisma.io)
-  [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38B2AC?logo=tailwind-css)](https://tailwindcss.com)
-  [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-
-  [Live Demo](https://neighbourhub-ai.vercel.app) · [Report Bug](https://github.com/vaishnavichaudhari910/neighbourhub-ai/issues) · [Request Feature](https://github.com/vaishnavichaudhari910/neighbourhub-ai/issues)
-
-</div>
-
----
 
 ## 📸 Screenshots
 
@@ -64,29 +45,7 @@
 ### 📋 My Bookings
 <img width="1916" height="866" alt="image" src="https://github.com/user-attachments/assets/8f8cae74-8dcb-46d5-b01f-71e6135da60d" />
 
-### ⚙️ Profile & Settings
-> *Replace with actual screenshot*
 
-![Profile Settings](https://placehold.co/1280x720/0f172a/60a5fa?text=Profile+%26+Settings+Page)
-
----
-
-### 🔧 Provider Dashboard
-> *Replace with actual screenshot*
-
-![Provider Dashboard](https://placehold.co/1280x720/0f172a/60a5fa?text=Provider+Dashboard+—+Earnings+%26+Stats)
-
----
-
-### 📦 Provider — My Services
-<img width="1917" height="867" alt="image" src="https://github.com/user-attachments/assets/472dc47a-fecb-4cda-a882-5eee67f01968" />
-
----
-
-### ✅ Provider — Booking Management
-<img width="1917" height="862" alt="image" src="https://github.com/user-attachments/assets/06f6911b-20d6-4255-a729-404664fb1d4a" />
-
----
 
 
 ## ✨ Features
