@@ -47,31 +47,22 @@
 ---
 
 ### 📅 Booking Flow
-> *Replace with actual screenshot*
+<img width="1917" height="871" alt="image" src="https://github.com/user-attachments/assets/e5b8ba58-d55e-4d53-b82e-d2283e046f3b" />
 
-![Booking Flow — Step 1: Time Slot](https://placehold.co/1280x720/0f172a/60a5fa?text=Booking+Flow+—+Step+1%3A+Time+Slot)
-
-![Booking Flow — Step 2: Address](https://placehold.co/1280x720/0f172a/60a5fa?text=Booking+Flow+—+Step+2%3A+Address)
-
-![Booking Flow — Step 3: Payment](https://placehold.co/1280x720/0f172a/60a5fa?text=Booking+Flow+—+Step+3%3A+Payment)
-
-![Booking Confirmed](https://placehold.co/1280x720/0f172a/60a5fa?text=Booking+Confirmed+%F0%9F%8E%89)
+<img width="1917" height="865" alt="image" src="https://github.com/user-attachments/assets/076c6f64-ea33-413c-b6c2-dc28d7ec45d4" />
+<img width="1917" height="857" alt="image" src="https://github.com/user-attachments/assets/63d02589-90fa-4bf1-9334-eab42fd94c41" />
+<img width="1917" height="863" alt="image" src="https://github.com/user-attachments/assets/52ca9b7a-ec35-485a-aebf-be49c82ebc84" />
+<img width="1917" height="872" alt="image" src="https://github.com/user-attachments/assets/9aacfb54-2e28-4ab8-81f3-5720b4711fc9" />
 
 ---
 
 ### 📊 Citizen Dashboard
-> *Replace with actual screenshot*
-
-![Citizen Dashboard](https://placehold.co/1280x720/0f172a/60a5fa?text=Citizen+Dashboard+—+Overview+%26+Stats)
+<img width="1917" height="881" alt="image" src="https://github.com/user-attachments/assets/ccfde307-4039-4697-aaec-dd2f5484df46" />
 
 ---
 
 ### 📋 My Bookings
-> *Replace with actual screenshot*
-
-![My Bookings](https://placehold.co/1280x720/0f172a/60a5fa?text=My+Bookings+—+Status+Tracking)
-
----
+<img width="1916" height="866" alt="image" src="https://github.com/user-attachments/assets/8f8cae74-8dcb-46d5-b01f-71e6135da60d" />
 
 ### ⚙️ Profile & Settings
 > *Replace with actual screenshot*
@@ -88,25 +79,15 @@
 ---
 
 ### 📦 Provider — My Services
-> *Replace with actual screenshot*
-
-![Provider Services](https://placehold.co/1280x720/0f172a/60a5fa?text=Provider+Services+—+Add+%2F+Edit+%2F+Delete)
+<img width="1917" height="867" alt="image" src="https://github.com/user-attachments/assets/472dc47a-fecb-4cda-a882-5eee67f01968" />
 
 ---
 
 ### ✅ Provider — Booking Management
-> *Replace with actual screenshot*
-
-![Provider Bookings](https://placehold.co/1280x720/0f172a/60a5fa?text=Provider+Bookings+—+Accept+%2F+Reject)
+<img width="1917" height="862" alt="image" src="https://github.com/user-attachments/assets/06f6911b-20d6-4255-a729-404664fb1d4a" />
 
 ---
 
-### 🌙 Dark Mode
-> *Replace with actual screenshot*
-
-![Dark Mode](https://placehold.co/1280x720/1e293b/60a5fa?text=Full+Dark+Mode+Support)
-
----
 
 ## ✨ Features
 
@@ -270,139 +251,6 @@ User ──────┬──── Provider ──── Service ───�
 | POST | `/api/upload` | Upload image to Cloudinary | ✅ |
 | GET | `/api/health` | DB health check | ❌ |
 
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js 18+
-- PostgreSQL database ([Neon](https://neon.tech) recommended — free tier)
-- Cloudinary account (free tier)
-
-### 1. Clone the repo
-
-```bash
-git clone https://github.com/vaishnavichaudhari910/neighbourhub-ai.git
-cd neighbourhub-ai
-```
-
-### 2. Install dependencies
-
-```bash
-npm install
-```
-
-### 3. Environment variables
-
-Create `.env` and `.env.local`:
-
-```env
-# Database (Neon PostgreSQL)
-DATABASE_URL="postgresql://user:password@host/dbname?sslmode=require"
-
-# Auth
-NEXTAUTH_SECRET="your-32-character-secret-here"
-NEXTAUTH_URL="http://localhost:3000"
-
-# Cloudinary
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="your-cloud-name"
-CLOUDINARY_API_KEY="your-api-key"
-CLOUDINARY_API_SECRET="your-api-secret"
-
-# App
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
-```
-
-### 4. Database setup
-
-```bash
-npx prisma migrate dev --name init
-npx prisma db seed
-node scripts/verify-providers.js
-```
-
-### 5. Start development server
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) 🎉
-
-### Test accounts (after seed)
-
-| Role | Email | Password |
-|------|-------|----------|
-| Citizen | citizen@test.com | Citizen@123 |
-| Provider | provider@test.com | Provider@123 |
-
----
-
-## 🌐 Deployment (Vercel)
-
-1. Push to GitHub
-2. Import project at [vercel.com](https://vercel.com)
-3. Add all environment variables
-4. Set build command: `prisma generate && next build`
-5. Deploy!
-
----
-
-## 📋 Scripts
-
-```bash
-npm run dev          # Start dev server (Turbopack)
-npm run build        # Production build
-npm run start        # Start production server
-npx prisma studio    # Open DB GUI
-npx prisma migrate dev   # Run migrations
-npx prisma db seed   # Seed database
-node scripts/verify-providers.js  # Verify all providers
-```
-
----
-
-## 🗺️ Roadmap
-
-- [x] **Phase 1** — Auth, Landing, Services, Booking wizard, Citizen Dashboard, Profile
-- [x] **Phase 2** — Role-based routing, Provider Dashboard, Service CRUD, Booking accept/reject
-- [ ] **Phase 3** — Reviews system, Real-time chat (Socket.IO), Community feed, Complaints
-- [ ] **Phase 4** — AI assistant, Smart recommendations, Admin dashboard, Analytics
-- [ ] **Phase 5** — PWA, Multi-language (EN/HI/MR), Push notifications, Performance
-
----
-
-## 🤝 Contributing
-
-1. Fork the project
-2. Create your branch (`git checkout -b feature/AmazingFeature`)
-3. Commit (`git commit -m 'feat: add AmazingFeature'`)
-4. Push (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
----
-
-## 📄 License
-
-MIT License — see [LICENSE](LICENSE)
-
----
-
-## 👩‍💻 Author
-
-**Vaishnavi Chaudhari**
-
-[![GitHub](https://img.shields.io/badge/GitHub-vaishnavichaudhari910-black?logo=github)](https://github.com/vaishnavichaudhari910)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin)](https://linkedin.com/in/your-profile)
-[![Portfolio](https://img.shields.io/badge/Portfolio-Visit-purple)](https://your-portfolio.com)
-
----
-
-## 🙏 Acknowledgements
-
-[Next.js](https://nextjs.org) · [shadcn/ui](https://ui.shadcn.com) · [Prisma](https://prisma.io) · [Neon](https://neon.tech) · [Cloudinary](https://cloudinary.com) · [TanStack Query](https://tanstack.com/query) · [Framer Motion](https://framer.com/motion) · [Vercel](https://vercel.com)
-
----
 
 <div align="center">
   <strong>⭐ Star this repo if you found it helpful!</strong>
