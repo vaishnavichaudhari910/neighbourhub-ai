@@ -1,9 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
 import { useTheme } from "next-themes"
 import {
   LayoutDashboard, Briefcase, CalendarCheck,
@@ -28,8 +27,10 @@ export function ProviderSidebar() {
   const router = useRouter()
   const { theme, setTheme } = useTheme()
   const [mobileOpen, setMobileOpen] = useState(false)
-const [mounted, setMounted] = useState(false)
-useEffect(() => { setMounted(true) }, [])
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => { setMounted(true) }, [])
+
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" })
     toast.success("Logged out")
@@ -74,11 +75,10 @@ useEffect(() => { setMounted(true) }, [])
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
-         {mounted ? (
-  theme === "dark"
-    ? <Sun className="w-4 h-4" />
-    : <Moon className="w-4 h-4" />
-) : <div className="w-4 h-4" />}
+          {mounted
+            ? theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />
+            : <div className="w-4 h-4" />}
+          {mounted ? (theme === "dark" ? "Light mode" : "Dark mode") : "Theme"}
         </button>
         <button onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
@@ -97,23 +97,18 @@ useEffect(() => { setMounted(true) }, [])
         <span className="font-poppins font-bold text-foreground text-sm">Provider Portal</span>
         <button onClick={() => setMobileOpen(true)}><Menu className="w-5 h-5" /></button>
       </div>
-      <AnimatePresence>
-        {mobileOpen && (
-          <>
-            <motion.div className="lg:hidden fixed inset-0 bg-black/50 z-40"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              onClick={() => setMobileOpen(false)} />
-            <motion.aside className="lg:hidden fixed top-0 left-0 h-screen w-72 bg-card border-r border-border z-50 flex flex-col"
-              initial={{ x: -288 }} animate={{ x: 0 }} exit={{ x: -288 }}
-              transition={{ type: "spring", damping: 25 }}>
-              <div className="flex justify-end p-4">
-                <button onClick={() => setMobileOpen(false)}><X className="w-5 h-5" /></button>
-              </div>
-              <SidebarContent />
-            </motion.aside>
-          </>
-        )}
-      </AnimatePresence>
+      {mobileOpen && (
+        <>
+          <div className="lg:hidden fixed inset-0 bg-black/50 z-40"
+            onClick={() => setMobileOpen(false)} />
+          <aside className="lg:hidden fixed top-0 left-0 h-screen w-72 bg-card border-r border-border z-50 flex flex-col">
+            <div className="flex justify-end p-4">
+              <button onClick={() => setMobileOpen(false)}><X className="w-5 h-5" /></button>
+            </div>
+            <SidebarContent />
+          </aside>
+        </>
+      )}
     </>
   )
 }

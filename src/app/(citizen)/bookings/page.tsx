@@ -1,10 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+export const dynamic = "force-dynamic"
+
+import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { motion } from "framer-motion"
 import { format } from "date-fns"
-import { Clock, CheckCircle, XCircle, CalendarCheck, TrendingUp } from "lucide-react"
+import {
+  Clock, CheckCircle, XCircle, CalendarCheck, TrendingUp
+} from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -22,11 +25,6 @@ const TABS = ["All", "Pending", "Confirmed", "Completed", "Cancelled"]
 
 export default function BookingsPage() {
   const [activeTab, setActiveTab] = useState("All")
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const { data, isLoading } = useQuery({
     queryKey: ["my-bookings"],
@@ -34,7 +32,6 @@ export default function BookingsPage() {
       const res = await fetch("/api/bookings")
       return res.json()
     },
-    enabled: mounted,
   })
 
   const allBookings = data?.data || []
@@ -46,43 +43,32 @@ export default function BookingsPage() {
 
   return (
     <div className="p-6 pt-20 lg:pt-8 max-w-4xl">
-      <motion.div className="mb-6"
-        initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
+      <div className="mb-6">
         <h1 className="text-2xl font-poppins font-bold text-foreground">My Bookings</h1>
         <p className="text-muted-foreground text-sm mt-1">{allBookings.length} total bookings</p>
-      </motion.div>
+      </div>
 
-      {/* Tabs */}
       <div className="flex gap-2 flex-wrap mb-6">
         {TABS.map(tab => (
           <button key={tab} onClick={() => setActiveTab(tab)}
             className={cn(
               "px-4 py-1.5 rounded-full text-sm font-medium transition-all",
-              activeTab === tab
-                ? "text-white"
-                : "bg-secondary text-muted-foreground hover:text-foreground"
+              activeTab === tab ? "text-white" : "bg-secondary text-muted-foreground hover:text-foreground"
             )}
-            style={activeTab === tab ? {
-              background: "linear-gradient(135deg, #3b82f6, #8b5cf6)"
-            } : {}}>
+            style={activeTab === tab ? { background: "linear-gradient(135deg, #3b82f6, #8b5cf6)" } : {}}>
             {tab}
           </button>
         ))}
       </div>
 
-      {/* Bookings list */}
-      {!mounted || isLoading ? (
+      {isLoading ? (
         <div className="space-y-4">
-          {Array(4).fill(0).map((_, i) => (
-            <Skeleton key={i} className="h-28 rounded-2xl" />
-          ))}
+          {Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-28 rounded-2xl" />)}
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 bg-card border border-border rounded-2xl">
           <div className="text-5xl mb-3">📋</div>
-          <p className="font-medium text-foreground mb-4">
-            No {activeTab.toLowerCase()} bookings
-          </p>
+          <p className="font-medium text-foreground mb-4">No {activeTab.toLowerCase()} bookings</p>
           <Button size="sm" asChild
             style={{ background: "linear-gradient(135deg, #3b82f6, #8b5cf6)" }}>
             <Link href="/services">Book a service</Link>
@@ -94,11 +80,8 @@ export default function BookingsPage() {
             const s = STATUS_CONFIG[booking.status] || STATUS_CONFIG.PENDING
             const SIcon = s.icon
             return (
-              <motion.div key={booking.id}
-                className="bg-card border border-border rounded-2xl p-5 hover:border-primary/30 transition-colors"
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}>
+              <div key={booking.id}
+                className="bg-card border border-border rounded-2xl p-5 hover:border-primary/30 transition-colors">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-2xl flex-shrink-0">
                     {booking.service?.category?.icon || "🔧"}
@@ -107,9 +90,7 @@ export default function BookingsPage() {
                     <div className="flex items-start justify-between gap-2 flex-wrap">
                       <div>
                         <p className="font-semibold text-foreground">{booking.service?.title}</p>
-                        <p className="text-sm text-muted-foreground">
-                          by {booking.service?.provider?.user?.name}
-                        </p>
+                        <p className="text-sm text-muted-foreground">by {booking.service?.provider?.user?.name}</p>
                       </div>
                       <span className={`inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-medium ${s.color}`}>
                         <SIcon className="w-3 h-3" /> {s.label}
@@ -127,7 +108,7 @@ export default function BookingsPage() {
                     )}
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )
           })}
         </div>
