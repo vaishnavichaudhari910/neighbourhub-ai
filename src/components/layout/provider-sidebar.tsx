@@ -70,7 +70,6 @@ export function ProviderSidebar() {
           )
         })}
       </nav>
-
       <div className="p-4 border-t border-border space-y-1">
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
