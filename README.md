@@ -52,8 +52,8 @@ Citizens can rate and review completed bookings directly from their bookings pag
 
 ### How it works
 1. Citizen books a service → Provider accepts → Job completed
-2. Citizen goes to **My Bookings** → Completed booking madhe **"Leave a review"** button disto
-3. Star rating (1-5) + optional comment submit karto
+2. Citizen goes to **My Bookings** → Completed booking **"Leave a review"** button 
+3. Star rating (1-5) + optional comment submit 
 4. Provider's average rating **automatically updates** across the platform
 
 ### Features
