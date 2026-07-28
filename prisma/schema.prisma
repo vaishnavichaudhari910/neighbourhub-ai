@@ -41,6 +41,7 @@ model User {
   provider      Provider?
   bookings      Booking[]
   addresses     Address[]
+  reviews       Review[]  // ← NEW
 
   @@map("users")
 }
@@ -65,6 +66,7 @@ model Provider {
   updatedAt     DateTime @updatedAt
 
   services      Service[]
+  reviews       Review[]  // ← NEW
 
   @@map("providers")
 }
@@ -128,6 +130,8 @@ model Booking {
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
 
+  review     Review?  // ← NEW
+
   @@index([userId])
   @@index([serviceId])
   @@map("bookings")
@@ -140,7 +144,7 @@ model Address {
   userId     String
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  label      String   // "Home", "Work", etc.
+  label      String
   line1      String
   line2      String?
   city       String
@@ -154,4 +158,23 @@ model Address {
 
   @@index([userId])
   @@map("addresses")
+}
+
+// ──────────────── REVIEW ──────────────── NEW
+
+model Review {
+  id         String   @id @default(cuid())
+  bookingId  String   @unique
+  userId     String
+  providerId String
+  rating     Int
+  comment    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  booking    Booking  @relation(fields: [bookingId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+  provider   Provider @relation(fields: [providerId], references: [id])
+
+  @@map("reviews")
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect  } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
@@ -26,13 +26,17 @@ export function DashboardSidebar() {
   const router = useRouter()
   const { theme, setTheme } = useTheme()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
+//   const [mounted, setMounted] = useState(false)
+const [mounted, setMounted] = useState(false)
 
+useEffect(() => {
+  setMounted(true)
+}, [])
   // Hydration fix
-  import("react").then(({ useEffect }) => {})
-  if (typeof window !== "undefined" && !mounted) {
-    setMounted(true)
-  }
+  // import("react").then(({ useEffect }) => {})
+  // if (typeof window !== "undefined" && !mounted) {
+  //   setMounted(true)
+  // }
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" })
