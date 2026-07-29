@@ -46,6 +46,24 @@
 <img width="1916" height="866" alt="image" src="https://github.com/user-attachments/assets/8f8cae74-8dcb-46d5-b01f-71e6135da60d" />
 
 
+## ⭐ Reviews & Ratings System
+
+Citizens can rate and review completed bookings directly from their bookings page.
+
+### How it works
+1. Citizen books a service → Provider accepts → Job completed
+2. Citizen goes to **My Bookings** → Completed booking **"Leave a review"** button 
+3. Star rating (1-5) + optional comment submit 
+4. Provider's average rating **automatically updates** across the platform
+
+### Features
+- ⭐ Interactive star rating (1–5) with hover effects
+- 💬 Optional review comment
+- 🔒 One review per booking — duplicate submit blocked
+- 📊 Provider average rating auto-recalculated after every review
+- ✅ Already reviewed bookings madhe star display disto (button nahi)
+- 🔍 Reviews visible on provider profile and services listing
+  <img width="1917" height="958" alt="image" src="https://github.com/user-attachments/assets/f9490d3a-a2ba-4393-a0ef-66c7198b2755" />
 
 
 ## ✨ Features
