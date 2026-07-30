@@ -48,7 +48,7 @@
 ## 🤖 AI Chatbot (Powered by Groq + LLaMA 3.1)
 
 An intelligent floating chatbot that helps citizens find and book services using natural language.
-
+AI chatbot with real-time service data retrieval using Groq LLaMA 3.1
 ### How it works
 1. Click the floating **blue button** (bottom-right corner) on any page
 2. Select your preferred language — **English, Hindi, or Marathi**
@@ -68,7 +68,6 @@ An intelligent floating chatbot that helps citizens find and book services using
 
 ### Tech Used
 - **Groq API** (free tier) — LLaMA 3.1 8B Instant model
-- **RAG pattern** — live service data injected into every prompt
 - **Next.js API route** — `/api/chat` handles all AI requests
 
 ### Example conversations
