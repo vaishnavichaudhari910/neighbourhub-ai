@@ -45,6 +45,41 @@
 ### 📋 My Bookings
 <img width="1916" height="866" alt="image" src="https://github.com/user-attachments/assets/8f8cae74-8dcb-46d5-b01f-71e6135da60d" />
 
+## 🤖 AI Chatbot (Powered by Groq + LLaMA 3.1)
+
+An intelligent floating chatbot that helps citizens find and book services using natural language.
+
+### How it works
+1. Click the floating **blue button** (bottom-right corner) on any page
+2. Select your preferred language — **English, Hindi, or Marathi**
+3. Type naturally or use quick prompt buttons
+4. AI suggests matching services with price + rating
+5. Say "book it" → automatically redirected to booking page
+
+### Current Features
+- 🌐 **Multi-language** — English, Hindi, Marathi support
+- 🔍 **RAG-based search** — searches real services from database
+- 💰 **Price comparison** — shows price + rating for each service
+- ⚡ **Auto booking redirect** — chat se directly booking page opens
+- 💬 **Conversation memory** — remembers context across messages
+- ⌨️ **Typing animation** — WhatsApp-style typing indicator
+- 🎯 **Quick prompts** — one-click service category buttons
+- 🔄 **Language switcher** — change language anytime mid-chat
+
+### Tech Used
+- **Groq API** (free tier) — LLaMA 3.1 8B Instant model
+- **RAG pattern** — live service data injected into every prompt
+- **Next.js API route** — `/api/chat` handles all AI requests
+
+### Example conversations
+```
+User: "Need a plumber under ₹500"
+AI:   "Found 2 plumbers: Basic ₹349 (4.8⭐), Premium ₹699..."
+
+User: "Book the basic one"  
+AI:   Redirects to → /booking?serviceId=xxx&date=today
+```
+<img width="1915" height="962" alt="image" src="https://github.com/user-attachments/assets/7d625231-e0c4-43cd-8c77-69ff5689d717" />
 
 ## ⭐ Reviews & Ratings System
 
