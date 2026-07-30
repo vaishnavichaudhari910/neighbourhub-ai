@@ -1,111 +1,83 @@
 import { NextRequest, NextResponse } from "next/server"
-import { GoogleGenerativeAI } from "@google/generative-ai"
 import { prisma } from "@/lib/prisma"
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 
 export async function POST(req: NextRequest) {
   try {
     const { messages, userMessage, language } = await req.json()
 
-    // Fetch available services
     const services = await prisma.service.findMany({
       where: { isAvailable: true },
       include: {
-        category: {
-          select: {
-            name: true,
-            icon: true,
-          },
-        },
+        category: { select: { name: true, icon: true } },
         provider: {
           select: {
             rating: true,
             city: true,
-            user: {
-              select: {
-                name: true,
-              },
-            },
+            user: { select: { name: true } },
           },
         },
       },
-      take: 10,
+      take: 8,
     })
 
-    const servicesContext = services
-      .map(
-        (service) =>
-          `- ${service.title} | Category: ${service.category.name} | Provider: ${service.provider.user.name} | City: ${service.provider.city || "N/A"} | Price: ₹${service.price} | Rating: ${service.provider.rating}⭐ | ID: ${service.id}`
-      )
-      .join("\n")
+    const servicesContext = services.map(s =>
+      `- ${s.title} | ${s.category.name} | Provider: ${s.provider.user.name} | ₹${s.price} | ${s.provider.rating}⭐ | ID: ${s.id}`
+    ).join("\n")
 
-    // Language instruction
     const languageInstruction =
-      language === "Hindi"
-        ? "ALWAYS respond in Hindi (Devanagari script) only."
-        : language === "Marathi"
-        ? "ALWAYS respond in Marathi (Devanagari script) only."
-        : "ALWAYS respond in English only."
+      language === "Hindi" ? "Always respond in Hindi only." :
+      language === "Marathi" ? "Always respond in Marathi only." :
+      "Always respond in English only."
 
-    const systemPrompt = `
-You are NeighbourHub AI, a helpful assistant for a community service booking platform in India.
-
-You help citizens:
-1. Find and compare local services (plumber, electrician, carpenter, cleaning, etc.)
-2. Get price information and provider ratings
-3. Navigate to booking pages
-4. Answer questions about the platform
+    const systemPrompt = `You are NeighbourHub AI assistant for a community service booking platform in India.
+${languageInstruction}
+Keep responses short and helpful (2-3 lines max).
+When user wants to book a service, add this at the end of your response: [BOOK:/booking?serviceId=ACTUAL_SERVICE_ID&date=${new Date().toISOString().split("T")[0]}]
+Replace ACTUAL_SERVICE_ID with the real ID from the services list.
 
 Available services:
-${servicesContext}
+${servicesContext}`
 
-Today's date: ${new Date().toISOString().split("T")[0]}
+    const chatMessages = [
+      ...messages.map((m: any) => ({
+        role: m.role === "assistant" ? "assistant" : "user",
+        content: m.content,
+      })),
+      { role: "user", content: userMessage },
+    ]
 
-Instructions:
-- ${languageInstruction}
-- Keep responses short and helpful (2-4 lines maximum)
-- When suggesting a service, mention:
-  • Provider name
-  • Price
-  • Rating
-- If the user wants to book a service, append this exactly at the end:
-  [BOOK:/booking?serviceId=SERVICE_ID&date=${new Date().toISOString().split("T")[0]}]
-- Be friendly and conversational.
-- If no matching service is found, politely apologize and suggest browsing the /services page.
-`
-
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash-8b",
-      systemInstruction: systemPrompt,
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "llama-3.1-8b-instant",
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...chatMessages,
+        ],
+        max_tokens: 300,
+        temperature: 0.7,
+      }),
     })
 
-    // Convert chat history for Gemini
-    const history = messages.slice(0, -1).map((message: any) => ({
-      role: message.role === "assistant" ? "model" : "user",
-      parts: [{ text: message.content }],
-    }))
+    if (!response.ok) {
+      const err = await response.json()
+      console.error("Groq error:", JSON.stringify(err))
+      throw new Error(err.error?.message || "Groq API failed")
+    }
 
-    const chat = model.startChat({ history })
+    const data = await response.json()
+    const assistantMessage = data.choices?.[0]?.message?.content || "Sorry, I could not process that."
 
-    const result = await chat.sendMessage(userMessage)
-    const assistantMessage = result.response.text()
-
-    return NextResponse.json({
-      success: true,
-      message: assistantMessage,
-    })
+    return NextResponse.json({ success: true, message: assistantMessage })
   } catch (error: any) {
     console.error("Chat error:", error?.message)
-
     return NextResponse.json(
-      {
-        success: false,
-        error: "Chat failed — " + error?.message,
-      },
-      {
-        status: 500,
-      }
+      { success: false, error: error?.message },
+      { status: 500 }
     )
   }
 }
