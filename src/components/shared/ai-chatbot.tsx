@@ -23,6 +23,7 @@ export function AIChatbot() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [showLoginBtn, setShowLoginBtn] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
@@ -39,6 +40,7 @@ export function AIChatbot() {
 
   const handleLanguageSelect = (lang: "English" | "Hindi" | "Marathi") => {
     setLanguage(lang)
+    setShowLoginBtn(false)
     setMessages([{
       role: "assistant",
       content:
@@ -55,6 +57,7 @@ export function AIChatbot() {
 
     const userMessage = text.trim()
     setInput("")
+    setShowLoginBtn(false)
 
     const newMessages: Message[] = [
       ...messages,
@@ -81,6 +84,15 @@ export function AIChatbot() {
 
       if (data.success) {
         const assistantMsg = data.message
+
+        // Login check
+        if (assistantMsg.includes("Please login first")) {
+          setMessages(prev => [...prev, { role: "assistant", content: assistantMsg }])
+          setShowLoginBtn(true)
+          return
+        }
+
+        // Booking redirect
         const bookingMatch = assistantMsg.match(/\[BOOK:(\/booking[^\]]+)\]/)
         if (bookingMatch) {
           const cleanMessage = assistantMsg.replace(/\[BOOK:[^\]]+\]/, "").trim()
@@ -183,7 +195,11 @@ export function AIChatbot() {
               <div className="flex items-center gap-2">
                 {language && (
                   <button
-                    onClick={() => { setLanguage(null); setMessages([]) }}
+                    onClick={() => {
+                      setLanguage(null)
+                      setMessages([])
+                      setShowLoginBtn(false)
+                    }}
                     className="text-xs text-white/70 hover:text-white px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition-colors">
                     🌐 Lang
                   </button>
@@ -261,6 +277,25 @@ export function AIChatbot() {
                       </div>
                     </div>
                   ))}
+
+                  {/* Login button — after login check message */}
+                  {showLoginBtn && (
+                    <div className="flex gap-2">
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+                        style={{ background: "linear-gradient(135deg, #3b82f6, #8b5cf6)" }}>
+                        <Bot className="w-3.5 h-3.5 text-white" />
+                      </div>
+                      <button
+                        onClick={() => {
+                          router.push("/login")
+                          setIsOpen(false)
+                        }}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm font-medium shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5"
+                        style={{ background: "linear-gradient(135deg, #3b82f6, #8b5cf6)" }}>
+                        🔐 Sign In to Continue
+                      </button>
+                    </div>
+                  )}
 
                   {/* Loading */}
                   {isLoading && (

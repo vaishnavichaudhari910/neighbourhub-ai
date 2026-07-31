@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { auth } from "@/lib/auth"
 
 export async function POST(req: NextRequest) {
   try {
+    // Auth check — login nahi asel tar
+    const session = await auth()
+    if (!session?.user) {
+      return NextResponse.json({
+        success: true,
+        message: "Please login first to use the AI assistant! 🔐\n\nClick **Sign In** to continue booking services.",
+      })
+    }
     const { messages, userMessage, language } = await req.json()
 
     const services = await prisma.service.findMany({
