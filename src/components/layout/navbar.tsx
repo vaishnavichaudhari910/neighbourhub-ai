@@ -35,22 +35,12 @@ export function Navbar() {
   return (
     <>
       <motion.header
-        className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-          scrolled
-            ? "py-3 border-b border-white/10 shadow-lg shadow-black/5"
-            : "py-5"
-        )}
-        style={{
-          background: scrolled
-            ? "rgba(var(--background-rgb, 255 255 255) / 0.85)"
-            : "transparent",
-          backdropFilter: scrolled ? "blur(16px)" : "none",
-          WebkitBackdropFilter: scrolled ? "blur(16px)" : "none",
-        }}
-        initial={{ y: -80 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300"
+style={{
+  background: "rgba(var(--background), 0.8)",
+  backdropFilter: "blur(12px)",
+  borderColor: scrolled ? "var(--border)" : "transparent",
+}}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
 
