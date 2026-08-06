@@ -11,7 +11,7 @@ export default function HomePage() {
       <Hero />
       <ServicesSection />
       <FeaturesSection />
-      <AISection />
+      {/* <AISection /> */}
       <TestimonialsSection />
       <FAQSection />
     </main>

@@ -55,4 +55,3 @@ export function AISection() {
       </div>
     </section>
   )
-}
