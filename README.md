@@ -10,7 +10,10 @@
 ---
 
 ### 🔐 Login & Register
-<img width="1912" height="868" alt="image" src="https://github.com/user-attachments/assets/d36f3c6f-920f-44cb-9935-4823fba2f028" />
+
+<img width="1888" height="912" alt="image" src="https://github.com/user-attachments/assets/964a41ac-4770-4f9f-a60b-8c0d9c60066b" />
+
+
 
 
 ---
