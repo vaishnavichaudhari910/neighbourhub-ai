@@ -4,8 +4,8 @@
 
 ### 🏠 Landing Page
 
-<img width="1915" height="866" alt="image" src="https://github.com/user-attachments/assets/cdf16b1b-a297-4e6a-b664-619070a183f5" />
 
+<img width="1891" height="865" alt="image" src="https://github.com/user-attachments/assets/ea8349b1-9d6c-4a58-87bc-6971c18edf4a" />
 
 ---
 
