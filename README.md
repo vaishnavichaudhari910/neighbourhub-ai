@@ -3,8 +3,10 @@
 
 ### 🏠 Landing Page
 
+<img width="1882" height="907" alt="image" src="https://github.com/user-attachments/assets/5e67c33d-b84a-4e9b-9f8f-f46b08a5b2fa" />
 
-<img width="1891" height="865" alt="image" src="https://github.com/user-attachments/assets/ea8349b1-9d6c-4a58-87bc-6971c18edf4a" />
+
+
 ---
 
 ### 🔐 Login & Register
