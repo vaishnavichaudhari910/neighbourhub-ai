@@ -32,7 +32,8 @@
 ---
 
 ### 📅 Booking Flow
-<img width="1917" height="871" alt="image" src="https://github.com/user-attachments/assets/e5b8ba58-d55e-4d53-b82e-d2283e046f3b" />
+<img width="1917" height="906" alt="image" src="https://github.com/user-attachments/assets/56c1d8b4-d8fc-452f-b60a-b4467fcbef06" />
+
 
 <img width="1917" height="865" alt="image" src="https://github.com/user-attachments/assets/076c6f64-ea33-413c-b6c2-dc28d7ec45d4" />
 <img width="1917" height="857" alt="image" src="https://github.com/user-attachments/assets/63d02589-90fa-4bf1-9334-eab42fd94c41" />
